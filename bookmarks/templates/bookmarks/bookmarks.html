@@ -1,0 +1,120 @@
+{% extends "bookmarks/layout.html" %}
+{% load static %}
+
+{% block body %}
+    <div class="container-fluid flex-grow-1 d-flex flex-column">
+        <div class="d-flex align-items-center mt-4">
+            <h2 class="flex-grow-1">
+                {% if is_trash_view %}
+                    Trash
+                {% elif is_unsorted_view %}
+                    Unsorted
+                {% elif is_category_view %}
+                    {{ selected_category.category }}
+                {% else %}
+                    All Bookmarks
+                {% endif %}
+            </h2>
+        </div>
+        <hr class="sidebar-first-line mb-3">
+
+        {% include 'bookmarks/searchbar_btn.html' with search_function="filterBookmarks" %} 
+        {% if bookmarks %}
+            <div id="bookmark-list" class="flex-grow-1">
+                {% for bookmark in page_obj %}
+                <div class="card mb-1 bookmark-card" 
+                     data-id="{{ bookmark.id }}"
+                     data-url="{{ bookmark.url }}"
+                     data-title="{{ bookmark.title|default_if_none:"" }}"
+                     data-category="{{ bookmark.category|default_if_none:"" }}"
+                     data-description="{{ bookmark.description|default_if_none:"" }}"
+                     data-tags="{% for tag in bookmark.tags.all %}{{ tag.tag }}{% if not forloop.last %}, {% endif %}{% endfor %}">  
+
+                    <div class="card-body">
+                        <div class="d-flex">
+                            <div class="bookmark-drag-handle" onclick="event.stopPropagation();">
+                                <i class="bi bi-grip-vertical fs-3"></i>
+                            </div>
+                            {% include "bookmarks/bookmark_image.html" with bookmark=bookmark size=64 preview_id=False %}
+                            <div class="flex-grow-1 card-text">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="card-text-container">
+                                        <h5 class="mb-1 bookmark-title">
+                                            {{ bookmark.title }}
+                                        </h5>
+                                        <h6 class="mb-0 text-muted bookmark-category-labelling d-flex align-items-center">
+                                            {% if bookmark.category|lower|cut:" " != "unsorted" and bookmark.category|lower|cut:" " != "trash" %}
+                                                <i class="bi bi-collection-fill" style="color: {{ bookmark.category.color }};"></i>
+                                                <span class="bookmark-category-name ms-1">
+                                                    {{ bookmark.category }}
+                                                </span>
+                                            {% else %}
+                                                <i class="bi bi-collection-fill"></i>
+                                                <span class="bookmark-category-name ms-1">
+                                                    {{ bookmark.category }}
+                                                </span>
+                                            {% endif %}
+                                            <span class="pipe-1 ms-1">|</span>
+                                            <span class="clock ms-1">
+                                                <i class="bi bi-clock-fill"></i> {{ bookmark.created_at|date:"M j, Y" }}
+                                            </span>
+                                            {% if bookmark.tags.exists %}
+                                                <span class="pipe-2 ms-1">|</span>
+                                                {% for tag in bookmark.tags.all %}
+                                                    <span class="badge rounded-pill text-dark bg-warning ms-1">{{ tag.tag }}</span>
+                                                {% endfor %}
+                                            {% endif %}
+                                        </h6>
+                                    </div>
+                                    <div class="card-btns">
+                                        {% if is_trash_view %}
+                                            <a href="{% url 'restore_bookmark' bookmark.id %}" class="btn btn-outline-success btn-sm" title="Restore" data-bs-tooltip="tooltip" data-bs-placement="bottom">
+                                                <i class="bi bi-reply-fill"></i>
+                                            </a>
+                                            <a href="{% url 'delete_forever' bookmark.id %}" class="btn btn-outline-danger btn-sm" title="Remove" data-bs-tooltip="tooltip" data-bs-placement="bottom">
+                                                <i class="bi bi-trash3-fill"></i>
+                                            </a>
+                                        {% else %}
+                                            <button type="button" class="btn btn-outline-dark btn-sm edit-bookmark-btn" title="Edit" data-bs-tooltip="tooltip" data-bs-placement="bottom" data-bs-toggle="modal" data-bs-target="#editBookmarkModal{{ bookmark.id }}" data-id="{{ bookmark.id }}" data-title="{{ bookmark.title }}" data-category="{{ bookmark.category.id }}" data-description="{{ bookmark.description }}" data-tags="{% for tag in bookmark.tags.all %}{{ tag.tag }}{% if not forloop.last %}, {% endif %}{% endfor %}" data-url="{{ bookmark.url }}">
+                                                <i class="bi bi-pencil-square"></i>
+                                            </button>
+                                            <a href="{% url 'move_to_trash' bookmark.id %}?next={{ request.path }}" class="btn btn-outline-danger btn-sm" title="Remove" data-bs-tooltip="tooltip" data-bs-placement="bottom">
+                                                <i class="bi bi-trash3-fill"></i>
+                                            </a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% include "bookmarks/modals/edit_bookmark.html" %}
+                {% endfor %}
+            </div>
+            {% include 'bookmarks/paginator.html' %}
+        {% else %}
+            <h2>
+                {% if is_trash_view %}
+                    Your Trash is empty
+                {% elif is_unsorted_view %}
+                    No Unsorted Bookmarks
+                {% elif is_category_view %}
+                    Your {{ selected_category.category }} Category is Empty
+                {% else %}
+                    No Active Bookmarks
+                {% endif %}
+            </h2>
+        {% endif %}
+    </div>
+{% if is_trash_view %}
+    {% include "bookmarks/modals/delete_all_bookmarks.html" %}
+{% else %}
+    {% include "bookmarks/modals/add_bookmark.html" %}
+{% endif %}
+
+{% endblock %}
+
+{% block script %}
+    <script src="{% static 'bookmarks/jscript/sortBookmarkOrder.js' %}"></script>
+    <script src="{% static 'bookmarks/jscript/editBookmark.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,32 @@
+<!-- Modal for Adding a Category -->
+<div class="modal fade" id="addCategoryModal" tabindex="-1" aria-labelledby="addCategoryModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="POST" action="{% url 'add_category' %}">
+                {% csrf_token %}
+                <div class="modal-header">
+                    <h5 class="modal-title">Add New Category</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="window.location.href='{% url 'categories' %}'"></button>
+                </div>
+                <div class="modal-body">
+
+                    {% if error_message %}
+                        <div class="alert alert-danger" role="alert">
+                            {{ error_message }}
+                        </div>
+                    {% endif %}
+
+                    <div class="mb-3">
+                        <label for="category" class="form-label">Category Name</label>
+                        <input type="text" class="form-control" autocomplete="off" id="category" name="category" required>
+                    </div>
+                    {% include "bookmarks/modals/color_category_selection.html" %}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="window.location.href='{% url 'categories' %}'">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Category</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

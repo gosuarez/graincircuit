@@ -1,0 +1,11 @@
+<div class="flex-shrink-0">
+    {% if bookmark.uploaded_image %}
+    <img src="{{ bookmark.uploaded_image.url }}" alt="{{ bookmark.title }}" class="img-fluid bookmark-image-size-{{ size }}"
+        {% if preview_id %} id="bookmark-image-preview-{{ bookmark.id }}" {% endif %}>
+    {% elif bookmark.image_url %}
+    <img src="{{ bookmark.image_url }}" alt="{{ bookmark.title }}" class="img-fluid bookmark-image-size-{{ size }}"
+        {% if preview_id %} id="bookmark-image-preview-{{ bookmark.id }}" {% endif %}>
+    {% else %}
+    <i class="bi bi-boxes bookmark-icon-size-{{ size }}"></i>
+    {% endif %}
+</div>

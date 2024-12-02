@@ -1,0 +1,33 @@
+{% extends "bookmarks/layout.html" %}
+
+{% block body %}
+<div class="container d-flex justify-content-center align-items-center login">
+    <div class="card p-4 shadow" style="width: 23rem;">
+        <div class="card-body text-center">
+            <div class="d-flex flex-column justify-content-center align-items-center mb-3">
+                <i class="bi bi-boxes"></i> 
+                <h2 class="mb-3">GrainCircuit</h2> 
+            </div>
+
+            <!-- Flash messages -->
+            {% include "bookmarks/flash_messages.html" %}
+
+            <form action="{% url 'login' %}" method="post" autocomplete="off">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <input autofocus class="form-control" type="text" name="username" placeholder="Username" autocomplete="off" required>
+                </div>
+                <div class="mb-3">
+                    <input class="form-control" type="password" name="password" placeholder="Password" autocomplete="off" required>
+                </div>
+                <div class="mb-3 text-center">
+                    <input type="submit" class="btn btn-primary w-100" value="Login">
+                </div>
+            </form>
+            <div>
+                Don't have an account?<br> <a href="{% url 'register' %}">Register here.</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,54 @@
+{% load static %}
+
+<div class="d-flex flex-column flex-shrink-0 text-bg-dark sidebar">
+    <a href="/bookmarks/" class="d-flex align-items-center sidebar-icon">
+        <i class="bi bi-boxes fs-1"></i>
+        <span class="fs-4 text-none ms-2">GrainCircuit</span>
+    </a>
+    <hr class="text-none">
+    <ul class="nav nav-pills flex-column mb-auto">
+        <li class="nav-item">
+            <a href="{% url 'index' %}" class="nav-link sidebar-icon {% if request.path == '/bookmarks/' %}active{% endif %}">
+                <i class="bi bi-bookmarks-fill"></i>
+                <span class="text-none ms-2">Bookmarks</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{% url 'unsorted' %}" class="nav-link sidebar-icon {% if request.path == '/unsorted/' %}active{% endif %}">
+                <i class="bi bi-archive-fill"></i>
+                <span class="text-none ms-2">Unsorted</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{% url 'trash' %}" class="nav-link sidebar-icon {% if request.path == '/trash/' %}active{% endif %}">
+                <i class="bi bi-trash3-fill"></i>
+                <span class="text-none ms-2">Trash</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{% url 'categories' %}" class="nav-link sidebar-icon {% if request.path == '/categories/' %}active{% endif %}">
+                <i class="bi bi-collection-fill"></i>
+                <span class="text-none ms-2">Categories</span>
+            </a>
+        </li>
+    </ul>
+    <div class="mt-auto">
+        <hr class="text-none">
+        <div class="dropdown">
+            <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle sidebar-icon" data-bs-toggle="dropdown" aria-expanded="false">
+            {% if user.profile.profile_image and user.profile.profile_image.url %}
+                <img src="{{ user.profile.profile_image.url }}" class="rounded-circle" alt="Profile Image" width="32" height="32">
+            {% else %}
+                <img src="{% static 'bookmarks/images/person-circle-white.svg' %}" alt="Profile Image" width="32" height="32" class="rounded-circle">
+            {% endif %}
+                <span class="text-none ms-2">{{ request.user }}</span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
+                <li><a class="dropdown-item" href="{% url 'profile' %}">Profile</a></li>
+                <li><a class="dropdown-item" href="{% url 'settings' %}">Settings</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="{% url 'logout' %}">Sign out</a></li>
+            </ul>
+        </div>
+    </div>
+</div>

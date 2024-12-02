@@ -1,0 +1,23 @@
+{% load static %}
+
+<div class="mb-3">
+<label for="category-color" class="form-label">Category Color</label>
+    <div class="container">
+        <div class="row justify-content-center">
+        {% for color, label in color_options %}
+            <div class="col-6 col-md-3 mb-3 text-center position-relative">
+                <input class="form-check-input d-none color-radio" type="radio" name="color" id="color{{ color }}" value="{{ label }}"
+                    {% if category.color == label %}checked{% elif not category and label == default_color %}checked{% endif %}>
+                <label class="color-selection" for="color{{ color }}" 
+                    style="display: inline-block; width: 40px; height: 40px; border-radius: 50%; background-color: {{ label }}; cursor: pointer;"
+                    data-bs-toggle="tooltip" title="{{ color|capfirst }}">
+                </label>
+            </div>
+        {% endfor %}
+        </div>
+    </div>
+</div>
+
+{% block scripts %}
+    <script src="{% static 'bookmarks/jscript/colorSelectionHandler.js' %}"></script>
+{% endblock %} 

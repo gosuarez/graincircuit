@@ -1,0 +1,58 @@
+{% extends "bookmarks/layout.html" %}
+{% load static %}
+
+{% block body %}
+
+<div class="container-fluid profile">
+    <!-- Profile Header -->
+    <div class="d-flex align-items-center mt-4">
+        <h2 class="flex-grow-1">Profile</h2>
+    </div>
+    <hr class="sidebar-first-line mb-3">
+
+    <!-- Flash messages -->
+    {% include "bookmarks/flash_messages.html" %}
+
+    <div class="text-center mt-5">
+        <div class="d-flex align-items-center justify-content-center mb-4">
+            <i class="bi bi-person-bounding-box me-2" style="font-size: 1.5rem;"></i>
+            <h4 class="mb-0">User Image</h4>
+        </div>
+        {% if user.profile.profile_image and user.profile.profile_image.url %}
+            <img src="{{ user.profile.profile_image.url }}" id="profile-page-image" class="rounded-circle" alt="Profile Image" width="150" height="150">
+        {% else %}
+            <img src="{% static 'bookmarks/images/person-circle-grey.svg' %}" id="profile-page-image" alt="Profile Image" width="150" height="150" class="rounded-circle">
+        {% endif %}
+
+        <form id="profileImageForm" action="{% url 'update_profile_image' %}" method="POST" enctype="multipart/form-data" 
+              data-url="{% url 'update_profile_image' %}" data-csrf-token="{{ csrf_token }}">
+            {% csrf_token %}
+            <label for="profile_image" class="btn btn-outline-primary mt-4">
+                <i class="bi bi-camera-fill"></i> Change
+            </label>
+            <input type="file" id="profile_image" name="profile_image" accept="image/*" class="d-none">
+        </form>
+
+    </div>
+
+    <hr class="my-5">
+    <!-- Username Section -->
+    <div class="text-center">
+        <div class="d-flex align-items-center justify-content-center mb-4">
+            <i class="bi bi-person-vcard-fill me-2" style="font-size: 1.5rem;"></i>
+            <h4 class="mb-0">User Name</h4>
+        </div>
+        <form action="{% url 'update_username' %}" method="POST">
+            {% csrf_token %}
+            <div class="mx-auto" style="max-width: 200px;">
+                <input type="text" class="form-control mb-2" autocomplete="off" id="username" name="username" value="{{ user.username }}" placeholder="Enter new username">
+                <button type="submit" class="btn btn-primary w-100">Update Username</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+    <script src="{% static 'bookmarks/jscript/profileImageHandler.js' %}"></script>
+{% endblock %}

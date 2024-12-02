@@ -1,0 +1,147 @@
+/* media-queries.css */
+@media (max-width: 860px) {
+  .sidebar {
+    width: var(--sidebar-width-small);
+    padding: 0;
+  }
+
+  .sidebar a.d-flex {
+    justify-content: center;
+    align-items: center;
+    height: var(--sidebar-width-small);
+    border-bottom: 1px solid var(--grey);
+  }
+
+  .text-none {
+    display: none;
+  }
+
+  .sidebar .nav-link {
+    justify-content: center;
+    padding: 0;
+    text-align: center;
+    border-bottom: 1px solid var(--grey);
+    border-radius: 0;
+    height: var(--sidebar-width-small);
+  }
+
+  .sidebar .nav-link .bi {
+    font-size: var(--icon-size-large);
+  }
+
+  .sidebar .dropdown {
+    border-top: 1px solid var(--grey);
+  }
+
+  .sidebar-first-line {
+    margin: 0.6rem 0 0 0; 
+  }
+}
+
+@media (max-width: 650px) {
+
+  .card-text-container {
+    max-width: 230px;
+  }
+
+  .clock {
+    display: none;
+  }
+
+  .pipe-1 {
+    display: none;
+  }
+}
+
+@media (max-width: 520px) {
+
+  .sidebar {
+    width: var(--sidebar-width-mobile);
+  }
+
+  .bookmark-image-size-64 {
+      width: 46px;
+      height: 46px;
+  }
+
+  .bookmark-icon-size-64 {
+      font-size: 46px;
+  }
+
+  .card-text {
+    margin-left: 7px;
+  }
+}
+
+@media (max-width: 480px) {
+
+  .card-text-container {
+    max-width: 150px;
+  }
+    
+  .bookmark-card .card-body .d-flex .btn {
+    margin-left: 4px !important;
+    padding: 3px 7px;
+  }
+
+  .bookmark-card .card-body h5, h6 {
+    font-size: 0.95rem;
+  }
+
+  .card-btns {
+    display: flex;
+    justify-content: flex-end; 
+    gap: 4px; 
+    flex-wrap: wrap; 
+  }
+
+  .card-text {
+    margin-left: 4px;
+  }
+
+}
+
+@media (max-width: 400px) {
+
+  .bookmark-card .card-body h5, h6 {
+    font-size: 0.8rem;
+  }
+
+  .card-text-container {
+    max-width: 150px;
+  }
+
+}
+
+@media (max-width: 350px) {
+
+  .card-text-container {
+    max-width: 130px;
+  }
+
+  .bookmark-card .card-body {
+    padding: 0.3rem 0.3rem 0.3rem 1.5rem;
+  }
+}
+
+
+@media (min-width: 576px) and (max-width: 767.98px) {
+  .row .col-sm-6 {
+    flex: 0 0 50%; /* Minimum 2 items */
+    max-width: 50%; /* Ensure the columns do not exceed 50% width */
+  }
+}
+
+@media (min-width: 768px) {
+  .row .col-md-4 {
+    flex: 0 0 33.3333%; /* Minimum 3 items */
+    max-width: 33.3333%; /* Ensure the columns do not exceed 33.3333% width */
+  }
+}
+
+@media (min-width: 1400px) {
+  .row .col-lg-2 {
+    flex: 0 0 16.6667%; /* Maximum 6 items */
+    max-width: 16.6667%; /* Ensure the columns do not exceed 16.6667% width */
+  }
+}

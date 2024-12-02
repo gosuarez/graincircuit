@@ -1,0 +1,62 @@
+# Environment variables
+.env
+
+# Python
+*.pyc
+*.pyo
+__pycache__/
+*.pyd
+
+# Virtual environment
+venv/
+.env/
+
+# Django
+*.sqlite3
+db.sqlite3
+/staticfiles/
+media/
+
+# Migrations
+**/migrations/*.py
+!**/migrations/__init__.py
+
+# Logs
+*.log
+*.log.*
+logs/
+debug.log
+
+# Temporary files
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.iml
+
+# Testing
+.coverage
+coverage.xml
+htmlcov/
+*.pytest_cache/
+*.testoutput/
+
+# Docker
+*.env.docker
+docker-compose.override.yml
+
+# Node.js (if using frontend tooling)
+node_modules/
+dist/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Deployment
+*.bak
+*.pem
+*.key

@@ -1,0 +1,67 @@
+{% extends "bookmarks/layout.html" %}
+{% load static %}
+
+{% block body %}
+    <div class="container-fluid flex-grow-1 d-flex flex-column">
+        <div class="d-flex align-items-center mt-4">
+            <h2 class="flex-grow-1">Categories</h2>
+        </div>
+        <hr class="sidebar-first-line mb-3">
+
+        {% include 'bookmarks/searchbar_btn.html' with search_function="filterCategories" %} 
+
+        <!-- Grid of Categories -->
+        <div class="row" id="category-list">
+            {% if categories %}
+                {% for category in categories %}
+                    <div class="col-12 col-md-4 col-lg-2 col-sm-6 mb-3 category-card" data-id="{{ category.id }}">
+                        <div class="d-flex justify-content-between align-items-center p-2 border rounded position-relative"
+                            style="background-color: {{ category.color }};"
+                            onclick="window.location.href='{% url 'bookmarks_by_category' category.category|lower %}';">
+                            
+                            <div class="category-drag-handle" onclick="event.stopPropagation();">
+                                <i class="bi bi-grip-vertical fs-5"></i>
+                            </div>
+
+                            <div class="d-flex align-items-center flex-grow-1 ms-3"> 
+                                <span class="category-name">{{ category.category }} </span>
+                                <span class="badge rounded-pill bg-white">{{ category.bookmark_count }}</span>
+                            </div>
+
+                            <!-- Ellipsis Dropdown (stops the click event from propagating) -->
+                            <div class="dropdown" onclick="event.stopPropagation();">
+                                <button class="btn btn-sm ellipsis-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-three-dots-vertical"></i>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#renameCategoryModal{{ category.id }}">Rename</a></li>
+                                    <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#editColorModal{{ category.id }}">Edit Color</a></li>
+                                    <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#confirmDeleteCategoryModal{{ category.id }}">Delete</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                        {% include "bookmarks/modals/rename_category.html" %}
+                        {% include "bookmarks/modals/edit_category_color.html" %}
+                        {% include "bookmarks/modals/confirm_delete_category.html" %}
+                        {% endfor %}
+                    {% else %}
+                        <h2>No categories available.</h2>
+            {% endif %}
+        </div>
+    </div>
+
+{% include "bookmarks/modals/add_category.html" %}
+
+{% if error_message %}
+    {% if show_rename_modal %}
+        <input type="hidden" id="rename_category_id" value="{{ rename_category_id }}" />
+    {% endif %}
+    <script src="{% static 'bookmarks/jscript/categoryModalErrorHandler.js' %}"></script>
+{% endif %}
+
+{% endblock %}
+
+{% block script %}
+    <script src="{% static 'bookmarks/jscript/sortCategoryOrder.js' %}"></script>
+{% endblock %}
