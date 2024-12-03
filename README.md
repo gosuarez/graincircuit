@@ -9,7 +9,6 @@
 ## Demo
 [Video](https://youtu.be/c4xljo1M5SE)
 
-
 ## Project Overview
 GrainCircuit is a comprehensive web application designed to streamline bookmark management. This application offers a more intuitive and visually engaging way to organise, sort, and interact with bookmarks.
 
