@@ -1,5 +1,4 @@
-import json
-import requests
+import json, os, requests
 from requests.exceptions import ConnectionError, InvalidURL, Timeout
 from django.views.decorators.cache import never_cache
 from django.contrib.auth import update_session_auth_hash
@@ -65,22 +64,38 @@ def logout_view(request):
     return HttpResponseRedirect(reverse("index"))
 
 
-def register(request):
-    if request.method == "POST":
-        form = CustomUserCreationForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            login(request, user)
-            return HttpResponseRedirect(reverse("index"))
-        messages.error(request, " ".join(
-            [error for error_list in form.errors.values() for error in error_list]))
+# def register(request):
+#     if request.method == "POST":
+#         form = CustomUserCreationForm(request.POST)
+#         if form.is_valid():
+#             user = form.save()
+#             login(request, user)
+#             return HttpResponseRedirect(reverse("index"))
+#         messages.error(request, " ".join(
+#             [error for error_list in form.errors.values() for error in error_list]))
+#     else:
+#         form = CustomUserCreationForm()
+#     return render(request, "bookmarks/register.html", {'form': form})
+
+def guest_login(request):
+    guest_user = authenticate(username=os.getenv(
+        "GUEST_USERNAME"), password=os.getenv("GUEST_PASSWORD"))
+    if guest_user:
+        login(request, guest_user)
+        return redirect("index")
     else:
-        form = CustomUserCreationForm()
-    return render(request, "bookmarks/register.html", {'form': form})
+        messages.error(
+            request, "Guest login failed. Please contact the administrator.")
+        return redirect("login")
 
 
 @login_required(login_url='/login/')
 def add_bookmark(request):
+    if request.user.username == "guest": 
+        messages.error(
+            request, "This is a demo. Guest users cannot add new bookmarks.")
+        return redirect(reverse("index"))
+
     if request.method == "POST":
         url = request.POST.get("url")
         category_id = request.POST.get("category")
@@ -88,25 +103,25 @@ def add_bookmark(request):
 
         try:
             response = requests.get(url, timeout=10)
-            response.raise_for_status()  
+            response.raise_for_status()
         except (ConnectionError, InvalidURL, Timeout):
-            
             messages.error(
-                request, "URL is invalid or unreachable. Please check the URL and try again.")
-            return redirect(reverse('index'))
-
+                request, "URL is invalid or unreachable. Please check the URL and try again."
+            )
+            return redirect(reverse("index"))
         except requests.exceptions.HTTPError as e:
-            
             messages.error(
-                request, f"URL cannot be added due to an HTTP error: {e}")
-            return redirect(reverse('index'))
+                request, f"URL cannot be added due to an HTTP error: {e}"
+            )
+            return redirect(reverse("index"))
 
         category = get_object_or_404(Category, id=category_id) if category_id else \
             Category.objects.get_or_create(
                 user=request.user, category='Unsorted')[0]
 
         bookmark = Bookmark.objects.create(
-            user=request.user, url=url, category=category)
+            user=request.user, url=url, category=category
+        )
 
         if tags:
             tag_names = [tag.strip() for tag in tags.split(',') if tag.strip()]
@@ -117,9 +132,10 @@ def add_bookmark(request):
 
         bookmark.save()
         messages.success(request, "Bookmark added successfully.")
-        return redirect(request.GET.get('next', reverse('index')))
+        return redirect(request.GET.get("next", reverse("index")))
 
     return redirect(reverse("index"))
+
 
 
 @login_required(login_url='/login/')
@@ -306,9 +322,17 @@ def edit_category_color(request, category_id):
 
 @login_required(login_url='/login/')
 def edit_bookmark(request, bookmark_id):
+    # Check if the user is a guest
+    if request.user.username == "guest":
+        messages.error(
+            request, "This is a demo. Guest users cannot edit bookmarks.")
+        return redirect(reverse("index"))
+
+    # Retrieve the bookmark
     bookmark = get_object_or_404(Bookmark, id=bookmark_id, user=request.user)
 
     if request.method == 'POST':
+        # Handle updates
         title = request.POST.get('title')
         category_id = request.POST.get('category')
         description = request.POST.get('description')
@@ -438,6 +462,10 @@ def delete_account(request):
 
 @login_required(login_url='/login/')
 def update_profile_image(request):
+    # Restrict guest users
+    if request.user.username == "guest":
+        return JsonResponse({'success': False, 'message': "This is a demo. Guest users cannot change the profile image."}, status=403)
+
     if request.method == 'POST' and request.FILES.get('profile_image'):
         form = ProfileImageForm(
             request.POST, request.FILES, instance=request.user.profile)
@@ -449,17 +477,23 @@ def update_profile_image(request):
 
 @login_required(login_url='/login/')
 def update_username(request):
+    # Restrict guest users
+    if request.user.username == "guest":
+        return JsonResponse({'success': False, 'message': "This is a demo. Guest users cannot change their username."}, status=403)
+
     if request.method == 'POST':
         form = UsernameChangeForm(request.POST, instance=request.user)
         if form.is_valid():
             form.save()
-            messages.success(
-                request, 'Your username has been updated successfully.')
-            return redirect('profile')
-    else:
-        form = UsernameChangeForm(instance=request.user)
+            return JsonResponse({'success': True, 'message': "Your username has been updated successfully."})
+        else:
+            # Extract error messages for invalid form submissions
+            errors = [error for error_list in form.errors.values()
+                      for error in error_list]
+            return JsonResponse({'success': False, 'message': " ".join(errors)}, status=400)
 
-    return render(request, 'update_username.html', {'form': form})
+    return JsonResponse({'success': False, 'message': "Invalid request."}, status=400)
+
 
 
 @login_required(login_url='/login/')
