@@ -7,11 +7,13 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <!-- Flash messages for modal -->
-                <div id="delete-account-flash-messages"></div>
                 <p>Are you sure you want to delete your account? This action cannot be undone.</p>
             </div>
             <div class="modal-footer">
+                <!-- Spinner -->
+                <div id="delete-account-spinner" class="spinner-border text-primary d-none" role="status">
+                    <span class="visually-hidden">Deleting...</span>
+                </div>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                 <form id="deleteAccountForm" action="{% url 'delete_account' %}" method="POST">
                     {% csrf_token %}

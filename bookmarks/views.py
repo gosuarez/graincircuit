@@ -1,4 +1,6 @@
-import json, os, requests
+import json
+import os
+import requests
 from requests.exceptions import ConnectionError, InvalidURL, Timeout
 from django.views.decorators.cache import never_cache
 from django.contrib.auth import update_session_auth_hash
@@ -27,10 +29,13 @@ def index(request):
 
 def bookmarks_view(request):
     if request.user.is_authenticated:
-        trash_category = Category.objects.filter(user=request.user, category='Trash').first()
-        bookmarks = Bookmark.objects.filter(user=request.user).exclude(category=trash_category).order_by('order')
+        trash_category = Category.objects.filter(
+            user=request.user, category='Trash').first()
+        bookmarks = Bookmark.objects.filter(user=request.user).exclude(
+            category=trash_category).order_by('order')
         page_obj = paginate(request, bookmarks)
-        categories = Category.objects.filter(user=request.user).exclude(category='Trash')
+        categories = Category.objects.filter(
+            user=request.user).exclude(category='Trash')
         context = get_default_context(
             bookmarks=bookmarks,
             categories=categories,
@@ -56,7 +61,6 @@ def login_view(request):
             return HttpResponseRedirect(reverse("index"))
         messages.error(request, "Invalid username and/or password.")
     return render(request, "bookmarks/login.html")
-
 
 
 def logout_view(request):
@@ -91,7 +95,7 @@ def guest_login(request):
 
 @login_required(login_url='/login/')
 def add_bookmark(request):
-    if request.user.username == "guest": 
+    if request.user.username == "guest":
         messages.error(
             request, "This is a demo. Guest users cannot add new bookmarks.")
         return redirect(reverse("index"))
@@ -106,13 +110,11 @@ def add_bookmark(request):
             response.raise_for_status()
         except (ConnectionError, InvalidURL, Timeout):
             messages.error(
-                request, "URL is invalid or unreachable. Please check the URL and try again."
-            )
+                request, "URL is invalid or unreachable. Please check the URL and try again.")
             return redirect(reverse("index"))
         except requests.exceptions.HTTPError as e:
             messages.error(
-                request, f"URL cannot be added due to an HTTP error: {e}"
-            )
+                request, f"URL cannot be added due to an HTTP error: {e}")
             return redirect(reverse("index"))
 
         category = get_object_or_404(Category, id=category_id) if category_id else \
@@ -120,8 +122,7 @@ def add_bookmark(request):
                 user=request.user, category='Unsorted')[0]
 
         bookmark = Bookmark.objects.create(
-            user=request.user, url=url, category=category
-        )
+            user=request.user, url=url, category=category)
 
         if tags:
             tag_names = [tag.strip() for tag in tags.split(',') if tag.strip()]
@@ -132,7 +133,7 @@ def add_bookmark(request):
 
         bookmark.save()
         messages.success(request, "Bookmark added successfully.")
-        return redirect(request.GET.get("next", reverse("index")))
+        return redirect(reverse("index"))
 
     return redirect(reverse("index"))
 
@@ -153,7 +154,6 @@ def update_category_order(request):
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 
-
 @login_required(login_url='/login/')
 def move_to_trash(request, bookmark_id):
     bookmark = get_object_or_404(Bookmark, id=bookmark_id, user=request.user)
@@ -169,8 +169,10 @@ def move_to_trash(request, bookmark_id):
 
 @login_required(login_url='/login/')
 def trash(request):
-    trash_category = Category.objects.filter(user=request.user, category='Trash').first()
-    bookmarks = Bookmark.objects.filter(user=request.user, category=trash_category).order_by('order')
+    trash_category = Category.objects.filter(
+        user=request.user, category='Trash').first()
+    bookmarks = Bookmark.objects.filter(
+        user=request.user, category=trash_category).order_by('order')
     page_obj = paginate(request, bookmarks)
     context = get_default_context(
         bookmarks=bookmarks,
@@ -199,10 +201,13 @@ def delete_forever(request, bookmark_id):
 
 @login_required(login_url='/login/')
 def unsorted(request):
-    unsorted_category = Category.objects.filter(user=request.user, category='Unsorted').first()
-    bookmarks = Bookmark.objects.filter(user=request.user, category=unsorted_category).order_by('order')
+    unsorted_category = Category.objects.filter(
+        user=request.user, category='Unsorted').first()
+    bookmarks = Bookmark.objects.filter(
+        user=request.user, category=unsorted_category).order_by('order')
     page_obj = paginate(request, bookmarks)
-    categories = Category.objects.filter(user=request.user).exclude(category='Trash')
+    categories = Category.objects.filter(
+        user=request.user).exclude(category='Trash')
     context = get_default_context(
         bookmarks=bookmarks,
         categories=categories,
@@ -218,7 +223,7 @@ def categories(request):
     color_options = get_color_options()
     categories = Category.objects.filter(user=request.user).exclude(
         category__in=['Trash', 'Unsorted']).annotate(bookmark_count=Count('bookmark')).order_by('order')
-    
+
     context = get_default_context(
         categories=categories,
         color_options=color_options,
@@ -278,8 +283,8 @@ def rename_category(request, category_id):
                     'color_options': color_options,
                     'categories': Category.objects.filter(user=request.user).exclude(
                         category__in=['Trash', 'Unsorted']).annotate(bookmark_count=Count('bookmark')).order_by('order'),
-                    'show_rename_modal': True,  
-                    'rename_category_id': category_id  
+                    'show_rename_modal': True,
+                    'rename_category_id': category_id
                 })
             else:
                 category.category = new_name
@@ -322,17 +327,14 @@ def edit_category_color(request, category_id):
 
 @login_required(login_url='/login/')
 def edit_bookmark(request, bookmark_id):
-    # Check if the user is a guest
     if request.user.username == "guest":
         messages.error(
             request, "This is a demo. Guest users cannot edit bookmarks.")
         return redirect(reverse("index"))
 
-    # Retrieve the bookmark
     bookmark = get_object_or_404(Bookmark, id=bookmark_id, user=request.user)
 
     if request.method == 'POST':
-        # Handle updates
         title = request.POST.get('title')
         category_id = request.POST.get('category')
         description = request.POST.get('description')
@@ -354,30 +356,22 @@ def edit_bookmark(request, bookmark_id):
 
         if tags:
             tag_names = [tag.strip() for tag in tags.split(',') if tag.strip()]
-
-            if tag_names:
-                existing_tags = Tag.objects.filter(
-                    user=request.user, tag__in=tag_names)
-                new_tags = [tag_name for tag_name in tag_names if not existing_tags.filter(
-                    tag=tag_name).exists()]
-
-                for tag_name in new_tags:
-                    tag, created = Tag.objects.get_or_create(
-                        user=request.user, tag=tag_name)
-                    bookmark.tags.add(tag)
-
-                bookmark.tags.add(*existing_tags)
-
-        unused_tags = Tag.objects.filter(user=request.user).annotate(
-            bookmark_count=Count('bookmark')).filter(bookmark_count=0)
-        unused_tags.delete()
+            existing_tags = Tag.objects.filter(
+                user=request.user, tag__in=tag_names)
+            new_tags = [tag_name for tag_name in tag_names if not existing_tags.filter(
+                tag=tag_name).exists()]
+            for tag_name in new_tags:
+                tag, created = Tag.objects.get_or_create(
+                    user=request.user, tag=tag_name)
+                bookmark.tags.add(tag)
+            bookmark.tags.add(*existing_tags)
 
         bookmark.save()
+        messages.success(request, "Bookmark updated successfully.")
+        return redirect(reverse("index"))
 
-        next_url = request.GET.get('next', reverse('index'))
-        return HttpResponseRedirect(next_url)
+    return redirect(reverse("index"))
 
-    return HttpResponseRedirect(reverse("index"))
 
 
 @login_required(login_url='/login/')
@@ -472,17 +466,23 @@ def delete_account(request):
                 {'success': False, 'message': "This is a demo. Guest users cannot delete their account."},
                 status=403
             )
-
+        # Add the success message to the session
+        messages.success(
+            request, "Your account has been deleted successfully."
+        )
+        # Delete the user account
         user = request.user
-        user.delete()  # Delete the user account
-        logout(request)  # Log the user out after account deletion
+        user.delete()
+
+        # Log out the user
+        logout(request)
+
+        # Redirect to the login page
         return JsonResponse(
-            {'success': True, 'message': "Your account has been deleted successfully.",
-                'redirect_url': reverse('login')}
+            {'success': True, 'redirect_url': reverse('login')}
         )
 
     return JsonResponse({'success': False, 'message': "Invalid request method."}, status=405)
-
 
 
 @login_required(login_url='/login/')
@@ -518,7 +518,6 @@ def update_username(request):
             return JsonResponse({'success': False, 'message': " ".join(errors)}, status=400)
 
     return JsonResponse({'success': False, 'message': "Invalid request."}, status=400)
-
 
 
 @login_required(login_url='/login/')

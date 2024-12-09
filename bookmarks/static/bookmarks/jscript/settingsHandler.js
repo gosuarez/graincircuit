@@ -5,8 +5,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const passwordForm = document.getElementById("passwordForm");
   const deleteAccountForm = document.getElementById("deleteAccountForm");
-  const deleteAccountFlashMessages = document.getElementById(
-    "delete-account-flash-messages"
+  const deleteAccountSpinner = document.getElementById(
+    "delete-account-spinner"
   );
 
   // Handle Email Update
@@ -18,6 +18,8 @@ document.addEventListener("DOMContentLoaded", function () {
       const csrfToken = document.querySelector(
         'input[name="csrfmiddlewaretoken"]'
       ).value;
+
+      clearFlashMessages(); // Clear existing messages
 
       fetch(emailForm.action, {
         method: "POST",
@@ -69,6 +71,8 @@ document.addEventListener("DOMContentLoaded", function () {
         'input[name="csrfmiddlewaretoken"]'
       ).value;
 
+      clearFlashMessages(); // Clear existing messages
+
       fetch(passwordForm.action, {
         method: "POST",
         body: formData,
@@ -109,15 +113,23 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // Handle Account Deletion
+  // Handle Delete Account
   if (deleteAccountForm) {
     deleteAccountForm.addEventListener("submit", function (e) {
-      e.preventDefault(); // Prevent the default form submission
+      e.preventDefault(); // Prevent default submission
 
       const formData = new FormData(deleteAccountForm);
       const csrfToken = document.querySelector(
         'input[name="csrfmiddlewaretoken"]'
       ).value;
+
+      // Show the spinner and disable the delete button
+      if (deleteAccountSpinner) {
+        deleteAccountSpinner.classList.remove("d-none");
+      }
+      deleteAccountForm.querySelector("button[type='submit']").disabled = true;
+
+      clearFlashMessages(); // Clear existing messages
 
       fetch(deleteAccountForm.action, {
         method: "POST",
@@ -136,33 +148,27 @@ document.addEventListener("DOMContentLoaded", function () {
         )
         .then((data) => {
           if (data.success) {
-            // Redirect the user to login after successful account deletion
-            setTimeout(() => {
-              window.location.href = data.redirect_url;
-            }, 2000);
+            // Redirect immediately after showing the success message
+            window.location.href = data.redirect_url;
           } else {
-            // Display error message inside the modal
-            if (deleteAccountFlashMessages) {
-              deleteAccountFlashMessages.innerHTML = ""; // Clear existing messages
-              displayFlashMessage(
-                data.success ? "success" : "danger",
-                data.message,
-                deleteAccountFlashMessages
-              );
-            }
+            displayFlashMessage("danger", data.message);
           }
         })
         .catch((error) => {
           console.error("Error:", error.message);
-
-          if (deleteAccountFlashMessages) {
-            deleteAccountFlashMessages.innerHTML = ""; // Clear existing messages
-            displayFlashMessage(
-              "danger",
-              error.message || "An unexpected error occurred.",
-              deleteAccountFlashMessages
-            );
+          displayFlashMessage(
+            "danger",
+            error.message || "An unexpected error occurred."
+          );
+        })
+        .finally(() => {
+          // Hide the spinner and re-enable the delete button
+          if (deleteAccountSpinner) {
+            deleteAccountSpinner.classList.add("d-none");
           }
+          deleteAccountForm.querySelector(
+            "button[type='submit']"
+          ).disabled = false;
         });
     });
   }

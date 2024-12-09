@@ -14,6 +14,10 @@ function displayFlashMessage(type, message, targetContainer = null) {
     return;
   }
 
+  // Clear existing messages
+  clearFlashMessages(container);
+
+  // Create and append new message
   const alertDiv = document.createElement("div");
   alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
   alertDiv.role = "alert";
@@ -21,6 +25,21 @@ function displayFlashMessage(type, message, targetContainer = null) {
     ${message}
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
   `;
-  container.innerHTML = ""; // Clear existing messages
   container.appendChild(alertDiv);
+}
+
+/**
+ * Utility function to clear all existing flash messages from a specified container.
+ * @param {HTMLElement} targetContainer - The container from which messages should be cleared.
+ */
+function clearFlashMessages(targetContainer = null) {
+  const container =
+    targetContainer || document.querySelector(".flash-messages");
+
+  if (!container) {
+    console.error("Flash messages container not found.");
+    return;
+  }
+
+  container.innerHTML = ""; // Clear all child elements
 }

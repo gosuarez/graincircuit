@@ -1,13 +1,13 @@
 document.addEventListener("DOMContentLoaded", function () {
   // Handle Profile Image Update
-  const profileImageInput = document.getElementById("profile_image");
-  const profileImageForm = document.getElementById("profileImageForm");
+  var profileImageInput = document.getElementById("profile_image");
+  var profileImageForm = document.getElementById("profileImageForm");
 
   if (profileImageInput && profileImageForm) {
-    const formActionUrl = profileImageForm.dataset.url;
+    var formActionUrl = profileImageForm.dataset.url;
 
     profileImageInput.addEventListener("change", function () {
-      const formData = new FormData(profileImageForm);
+      var formData = new FormData(profileImageForm);
 
       fetch(formActionUrl, {
         method: "POST",
@@ -29,6 +29,7 @@ document.addEventListener("DOMContentLoaded", function () {
             document.getElementById("profile-page-image").src = data.image_url;
             document.querySelector(".dropdown img.rounded-circle").src =
               data.image_url;
+            clearFlashMessages(); // Clear existing messages
             displayFlashMessage(
               "success",
               "Profile image updated successfully."
@@ -37,13 +38,14 @@ document.addEventListener("DOMContentLoaded", function () {
         })
         .catch((error) => {
           console.error("Error:", error.message);
+          clearFlashMessages(); // Clear existing messages
           displayFlashMessage("danger", error.message);
         });
     });
   }
 
   // Handle Username Update
-  const usernameForm = document.getElementById("usernameForm");
+  var usernameForm = document.getElementById("usernameForm");
 
   if (usernameForm) {
     const originalUsername = document.getElementById("username").value;
@@ -51,8 +53,8 @@ document.addEventListener("DOMContentLoaded", function () {
     usernameForm.addEventListener("submit", function (e) {
       e.preventDefault(); // Prevent default form submission
 
-      const formData = new FormData(usernameForm);
-      const formActionUrl = usernameForm.action;
+      var formData = new FormData(usernameForm);
+      var formActionUrl = usernameForm.action;
 
       fetch(formActionUrl, {
         method: "POST",
@@ -79,6 +81,7 @@ document.addEventListener("DOMContentLoaded", function () {
               sidebarUsername.textContent = formData.get("username");
             }
 
+            clearFlashMessages(); // Clear existing messages
             displayFlashMessage("success", data.message);
           }
         })
@@ -88,6 +91,7 @@ document.addEventListener("DOMContentLoaded", function () {
           // Reset the username input field to the original value
           document.getElementById("username").value = originalUsername;
 
+          clearFlashMessages(); // Clear existing messages
           displayFlashMessage("danger", error.message);
         });
     });

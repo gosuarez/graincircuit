@@ -1,5 +1,3 @@
-{% load static %}
-
 <!-- Modal for Adding a Bookmark -->
 <div class="modal fade" id="addBookmarkModal" tabindex="-1" aria-labelledby="addBookmarkModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -11,8 +9,6 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <!-- Flash messages -->
-                    {% include "bookmarks/flash_messages.html" %}
                     <div class="mb-3">
                         <label for="bookmark-url" class="form-label">URL</label>
                         <input type="url" class="form-control" id="bookmark-url" autocomplete="off" name="url" required placeholder="https://">
@@ -38,7 +34,3 @@
         </div>
     </div>
 </div>
-
-{% block script %}
-    <script src="{% static 'bookmarks/jscript/bookmarkHandler.js' %}"></script>
-{% endblock %}
