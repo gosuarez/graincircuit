@@ -413,51 +413,76 @@ def paginate(request, bookmarks, num=20):
 
 @login_required(login_url='/login/')
 def change_email(request):
+    # Restrict guest users
+    if request.user.username == "guest":
+        return JsonResponse({'success': False, 'message': "This is a demo. Guest users cannot change their email."}, status=403)
+
     if request.method == 'POST':
         form = EmailChangeForm(request.POST, instance=request.user)
         if form.is_valid():
             form.save()
-            messages.success(
-                request, 'Your email has been updated successfully.')
-            return redirect('settings')
+            return JsonResponse({'success': True, 'message': 'Your email has been updated successfully.', 'email': request.user.email})
         else:
-            messages.error(
-                request, 'The entered email already exists or is invalid.')
-    else:
-        form = EmailChangeForm(instance=request.user)
+            # Collect errors from the form
+            errors = [error for error_list in form.errors.values()
+                      for error in error_list]
+            return JsonResponse({'success': False, 'message': " ".join(errors)}, status=400)
 
-    return render(request, 'bookmarks/settings.html', {'form': form})
+    return JsonResponse({'success': False, 'message': "Invalid request."}, status=400)
 
 
 @login_required(login_url='/login/')
 def change_password(request):
+    # Restrict guest users
+    if request.user.username == "guest":
+        return JsonResponse({
+            'success': False,
+            'message': "This is a demo. Guest users cannot change their password."
+        }, status=403)
+
     if request.method == 'POST':
         form = PasswordChangeForm(user=request.user, data=request.POST)
         if form.is_valid():
             user = form.save()
-            update_session_auth_hash(request, user)
-            messages.success(request, "Password changed successfully.")
-            return redirect('settings')
+            update_session_auth_hash(request, user)  # Keep user logged in
+            return JsonResponse({
+                'success': True,
+                'message': "Password changed successfully."
+            })
         else:
-            for field, errors in form.errors.items():
-                for error in errors:
-                    messages.error(request, f"{error}")
-    else:
-        form = PasswordChangeForm(user=request.user)
+            # Extract error messages for invalid form submissions
+            errors = [error for field_errors in form.errors.values()
+                      for error in field_errors]
+            return JsonResponse({
+                'success': False,
+                'message': " ".join(errors)
+            }, status=400)
 
-    return render(request, 'bookmarks/settings.html', {'form': form})
+    return JsonResponse({
+        'success': False,
+        'message': "Invalid request method."
+    }, status=400)
 
 
 @login_required(login_url='/login/')
 def delete_account(request):
     if request.method == 'POST':
+        if request.user.username == "guest":
+            return JsonResponse(
+                {'success': False, 'message': "This is a demo. Guest users cannot delete their account."},
+                status=403
+            )
+
         user = request.user
-        user.delete()  
-        logout(request) 
-        messages.success(
-            request, 'Your account has been deleted successfully.')
-        return redirect('login')
-    return render(request, 'bookmarks/settings.html')
+        user.delete()  # Delete the user account
+        logout(request)  # Log the user out after account deletion
+        return JsonResponse(
+            {'success': True, 'message': "Your account has been deleted successfully.",
+                'redirect_url': reverse('login')}
+        )
+
+    return JsonResponse({'success': False, 'message': "Invalid request method."}, status=405)
+
 
 
 @login_required(login_url='/login/')

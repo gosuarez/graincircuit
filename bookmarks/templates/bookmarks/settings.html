@@ -1,4 +1,5 @@
 {% extends "bookmarks/layout.html" %}
+{% load static %}
 
 {% block body %}
 
@@ -18,9 +19,16 @@
             <i class="bi bi-envelope-at-fill me-2" style="font-size: 1.5rem;"></i>
             <h4 class="mb-0">Change Email</h4>
         </div>
+        <!-- Display Current Email -->
+        <div class="form-group mb-2">
+            <label for="current-email" class="visually-hidden">Current Email</label>
+            <input type="text" class="form-control" id="current-email" value="{{ user.email }}" readonly style="max-width: 200px; margin: 0 auto; background-color: #f8f9fa; border: 1px solid #ced4da;">
+        </div>
+        <!-- Form for Email Update -->
         <form action="{% url 'change_email' %}" method="POST">
             {% csrf_token %}
             <div class="form-group">
+                <label for="email" class="visually-hidden">New Email</label>
                 <input type="email" class="form-control" id="email" name="email" autocomplete="off" required placeholder="Enter new email" style="max-width: 200px; margin: 0 auto;">
             </div>
             <button type="submit" class="btn btn-primary mt-2" style="width: 200px;">Update Email</button>
@@ -30,12 +38,12 @@
     <hr class="my-5">
 
     <!-- Password Update Section -->
-    <div class="text-center">
+    <div class="text-center mt-5">
         <div class="d-flex align-items-center justify-content-center mb-4">
             <i class="bi bi-file-earmark-lock2-fill me-2" style="font-size: 1.5rem;"></i>
             <h4 class="mb-0">Change Password</h4>
         </div>
-        <form action="{% url 'change_password' %}" method="POST">
+        <form id="passwordForm" action="{% url 'change_password' %}" method="POST">
             {% csrf_token %}
             <div class="form-group">
                 <input type="password" class="form-control" id="old_password" required name="old_password" placeholder="Enter current password" style="max-width: 200px; margin: 0 auto;">
@@ -66,4 +74,8 @@
     </div>
 </div>
 
+{% endblock %}
+
+{% block script %}
+    <script src="{% static 'bookmarks/jscript/settingsHandler.js' %}"></script>
 {% endblock %}
