@@ -249,6 +249,11 @@ def categories(request):
 
 @login_required(login_url='/login/')
 def add_category(request):
+    if request.user.username == "guest":
+        messages.error(
+            request, "This is a demo. Guest users cannot add categories.")
+        return redirect('categories')
+
     color_options = get_color_options()
 
     if request.method == "POST":
@@ -259,7 +264,7 @@ def add_category(request):
         if category_name:
             if Category.objects.filter(user=request.user, category__iexact=category_name).exists():
                 error_message = f'The category "{
-                    category_name}" has already been created. Try with a different name.'
+                    category_name}" already exists. Try with a different name.'
                 return render(request, 'bookmarks/categories.html', {
                     'error_message': error_message,
                     'selected_color': category_color,
@@ -268,19 +273,23 @@ def add_category(request):
                         category__in=['Trash', 'Unsorted']).annotate(bookmark_count=Count('bookmark')).order_by('order'),
                 })
             else:
-                # Increment the order of all existing categories for the user
                 Category.objects.filter(user=request.user).update(
                     order=F('order') + 1)
-
-                # Create the new category with order set to 0
                 Category.objects.create(
                     user=request.user, category=category_name, color=category_color, order=0)
+                messages.success(request, "Category added successfully.")
                 return redirect('categories')
+
     return redirect('categories')
 
 
 @login_required(login_url='/login/')
 def rename_category(request, category_id):
+    if request.user.username == "guest":
+        messages.error(
+            request, "This is a demo. Guest users cannot rename categories.")
+        return redirect('categories')
+
     category = get_object_or_404(Category, id=category_id, user=request.user)
     color_options = get_color_options()
 
@@ -303,28 +312,33 @@ def rename_category(request, category_id):
             else:
                 category.category = new_name
                 category.save()
+                messages.success(request, f'Category renamed to "{new_name}".')
+                return redirect('categories')
 
     return redirect('categories')
 
 
 @login_required(login_url='/login/')
 def delete_category(request, category_id):
+    if request.user.username == "guest":
+        messages.error(
+            request, "This is a demo. Guest users cannot delete categories.")
+        return redirect('categories')
+
     category = get_object_or_404(Category, id=category_id, user=request.user)
 
     trash_category = Category.objects.filter(
         user=request.user, category='Trash').first()
-
     if not trash_category:
         trash_category = Category.objects.create(
             user=request.user, category='Trash')
 
     bookmarks = Bookmark.objects.filter(category=category)
-
     if bookmarks.exists():
         bookmarks.update(category=trash_category)
 
     category.delete()
-
+    messages.success(request, f'Category "{category.category}" deleted successfully.')
     return redirect('categories')
 
 

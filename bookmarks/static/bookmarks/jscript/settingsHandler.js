@@ -8,6 +8,11 @@ document.addEventListener("DOMContentLoaded", function () {
   const deleteAccountSpinner = document.getElementById(
     "delete-account-spinner"
   );
+  const deleteAccountModal = document.getElementById("deleteAccountModal");
+  const deleteAccountBootstrapModal = deleteAccountModal
+    ? bootstrap.Modal.getInstance(deleteAccountModal) ||
+      new bootstrap.Modal(deleteAccountModal)
+    : null;
 
   // Handle Email Update
   if (emailForm) {
@@ -152,6 +157,11 @@ document.addEventListener("DOMContentLoaded", function () {
             window.location.href = data.redirect_url;
           } else {
             displayFlashMessage("danger", data.message);
+
+            // Explicitly close the modal on failure
+            if (deleteAccountBootstrapModal) {
+              deleteAccountBootstrapModal.hide();
+            }
           }
         })
         .catch((error) => {
@@ -160,6 +170,11 @@ document.addEventListener("DOMContentLoaded", function () {
             "danger",
             error.message || "An unexpected error occurred."
           );
+
+          // Explicitly close the modal on error
+          if (deleteAccountBootstrapModal) {
+            deleteAccountBootstrapModal.hide();
+          }
         })
         .finally(() => {
           // Hide the spinner and re-enable the delete button

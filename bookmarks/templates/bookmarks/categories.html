@@ -8,6 +8,9 @@
         </div>
         <hr class="sidebar-first-line mb-3">
 
+        <!-- Flash messages -->
+        {% include "bookmarks/flash_messages.html" %}
+
         {% include 'bookmarks/searchbar_btn.html' with search_function="filterCategories" %} 
 
         <!-- Grid of Categories -->
