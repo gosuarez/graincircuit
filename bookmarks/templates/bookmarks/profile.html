@@ -23,12 +23,11 @@
         {% else %}
             <img src="{% static 'bookmarks/images/person-circle-grey.svg' %}" id="profile-page-image" alt="Profile Image" width="150" height="150" class="rounded-circle">
         {% endif %}
-
         <form id="profileImageForm" action="{% url 'update_profile_image' %}" method="POST" enctype="multipart/form-data" 
-              data-url="{% url 'update_profile_image' %}">
+            data-url="{% url 'update_profile_image' %}">
             {% csrf_token %}
-            <label for="profile_image" class="btn btn-outline-primary mt-4">
-                <i class="bi bi-camera-fill"></i> Change
+            <label for="profile_image" class="btn btn-primary mt-4" style="max-width: 200px; margin: 0 auto; display: block;">
+                Change Image
             </label>
             <input type="file" id="profile_image" name="profile_image" accept="image/*" class="d-none">
         </form>

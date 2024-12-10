@@ -40,6 +40,10 @@ document.addEventListener("DOMContentLoaded", function () {
           console.error("Error:", error.message);
           clearFlashMessages(); // Clear existing messages
           displayFlashMessage("danger", error.message);
+        })
+        .finally(() => {
+          // Clear the file input to allow the same file to trigger the change event again
+          profileImageInput.value = "";
         });
     });
   }

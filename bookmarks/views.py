@@ -98,7 +98,7 @@ def add_bookmark(request):
     if request.user.username == "guest":
         messages.error(
             request, "This is a demo. Guest users cannot add new bookmarks.")
-        return redirect(reverse("index"))
+        return redirect(request.GET.get("next", reverse("index")))
 
     if request.method == "POST":
         url = request.POST.get("url")
@@ -111,11 +111,11 @@ def add_bookmark(request):
         except (ConnectionError, InvalidURL, Timeout):
             messages.error(
                 request, "URL is invalid or unreachable. Please check the URL and try again.")
-            return redirect(reverse("index"))
+            return redirect(request.GET.get("next", reverse("index")))
         except requests.exceptions.HTTPError as e:
             messages.error(
                 request, f"URL cannot be added due to an HTTP error: {e}")
-            return redirect(reverse("index"))
+            return redirect(request.GET.get("next", reverse("index")))
 
         category = get_object_or_404(Category, id=category_id) if category_id else \
             Category.objects.get_or_create(
@@ -133,9 +133,9 @@ def add_bookmark(request):
 
         bookmark.save()
         messages.success(request, "Bookmark added successfully.")
-        return redirect(reverse("index"))
+        return redirect(request.GET.get("next", reverse("index")))
 
-    return redirect(reverse("index"))
+    return redirect(request.GET.get("next", reverse("index")))
 
 
 
@@ -156,15 +156,22 @@ def update_category_order(request):
 
 @login_required(login_url='/login/')
 def move_to_trash(request, bookmark_id):
+    if request.user.username == "guest":
+        messages.error(
+            request, "This is a demo. Guest users cannot delete bookmarks.")
+        next_url = request.GET.get('next', reverse('index'))
+        return redirect(next_url)
+
     bookmark = get_object_or_404(Bookmark, id=bookmark_id, user=request.user)
     trash_category, created = Category.objects.get_or_create(
         user=request.user, category='Trash')
     bookmark.category = trash_category
     bookmark.save()
 
+    messages.success(request, "Bookmark moved to trash successfully.")
     next_url = request.GET.get('next', reverse('index'))
+    return redirect(next_url)
 
-    return HttpResponseRedirect(next_url)
 
 
 @login_required(login_url='/login/')
@@ -194,9 +201,16 @@ def restore_bookmark(request, bookmark_id):
 
 @login_required(login_url='/login/')
 def delete_forever(request, bookmark_id):
+    if request.user.username == "guest":
+        messages.error(
+            request, "This is a demo. Guest users cannot delete bookmarks permanently.")
+        return redirect(reverse('trash'))
+
     bookmark = get_object_or_404(Bookmark, id=bookmark_id, user=request.user)
     bookmark.delete()
-    return HttpResponseRedirect(reverse("trash"))
+
+    messages.success(request, "Bookmark deleted permanently.")
+    return redirect(reverse('trash'))
 
 
 @login_required(login_url='/login/')
@@ -330,7 +344,7 @@ def edit_bookmark(request, bookmark_id):
     if request.user.username == "guest":
         messages.error(
             request, "This is a demo. Guest users cannot edit bookmarks.")
-        return redirect(reverse("index"))
+        return redirect(request.GET.get("next", reverse("index")))
 
     bookmark = get_object_or_404(Bookmark, id=bookmark_id, user=request.user)
 
@@ -368,9 +382,9 @@ def edit_bookmark(request, bookmark_id):
 
         bookmark.save()
         messages.success(request, "Bookmark updated successfully.")
-        return redirect(reverse("index"))
+        return redirect(request.GET.get("next", reverse("index")))
 
-    return redirect(reverse("index"))
+    return redirect(request.GET.get("next", reverse("index")))
 
 
 
@@ -522,12 +536,21 @@ def update_username(request):
 
 @login_required(login_url='/login/')
 def delete_all_bookmarks(request):
+    if request.user.username == "guest":
+        messages.error(
+            request, "This is a demo. Guest users cannot delete all bookmarks.")
+        return HttpResponseRedirect(reverse("trash"))
+
     trash_category = Category.objects.filter(
         user=request.user, category='Trash').first()
     if trash_category:
         Bookmark.objects.filter(
             user=request.user, category=trash_category).delete()
+        messages.success(
+            request, "All bookmarks in trash deleted successfully.")
+
     return HttpResponseRedirect(reverse("trash"))
+
 
 
 @login_required(login_url='/login/')
