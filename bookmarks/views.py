@@ -1,7 +1,7 @@
 import json
 import os
 import requests
-from requests.exceptions import ConnectionError, InvalidURL, Timeout
+from requests.exceptions import ConnectionError, InvalidURL, Timeout, HTTPError, MissingSchema
 from django.views.decorators.cache import never_cache
 from django.contrib.auth import update_session_auth_hash
 from django.views.decorators.http import require_POST
@@ -108,11 +108,11 @@ def add_bookmark(request):
         try:
             response = requests.get(url, timeout=10)
             response.raise_for_status()
-        except (ConnectionError, InvalidURL, Timeout):
+        except (ConnectionError, InvalidURL, Timeout, MissingSchema):
             messages.error(
                 request, "URL is invalid or unreachable. Please check the URL and try again.")
             return redirect(request.GET.get("next", reverse("index")))
-        except requests.exceptions.HTTPError as e:
+        except HTTPError as e:
             messages.error(
                 request, f"URL cannot be added due to an HTTP error: {e}")
             return redirect(request.GET.get("next", reverse("index")))
@@ -598,3 +598,5 @@ def update_bookmark_order(request):
         return JsonResponse({'error': str(e)}, status=400)
     except Exception as e:
         return JsonResponse({'error': 'An unexpected error occurred'}, status=500)
+    
+    
