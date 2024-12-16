@@ -182,6 +182,10 @@ def create_profile_and_default_categories(sender, instance, created, **kwargs):
         Category.objects.get_or_create(user=instance, category='Unsorted')
         Category.objects.get_or_create(user=instance, category='Trash')
     instance.profile.save()
+    
+
+# Disconnect the signal temporarily before loading data
+# post_save.disconnect(create_profile_and_default_categories, sender=User)
 
 
 @receiver(post_delete, sender=Bookmark)
