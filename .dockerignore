@@ -1,0 +1,54 @@
+# Python caches and compiled files
+__pycache__
+*.pyc
+*.pyo
+
+# SQLite database (only if applicable)
+*.sqlite3
+
+# Environment files
+.env
+.env*
+
+# Static and media files (they will be collected during the build)
+staticfiles/
+media/
+
+# Log files
+*.log
+
+# Swap files
+*.swp
+
+# Virtual environment
+venv/
+.DS_Store
+
+# Backups
+backup.sql
+
+# Git repository and metadata
+.git/
+.gitignore
+
+# Docker-related files
+Dockerfile
+Dockerfile.prod
+docker-compose.yml
+docker-compose.prod.yml
+entrypoint.sh
+
+# Editor and IDE-related files
+.vscode/
+.idea/
+*.iml
+
+# Coverage and test outputs
+.coverage
+coverage.xml
+htmlcov/
+*.pytest_cache/
+*.testoutput/
+
+# Tests
+bookmarks/tests/

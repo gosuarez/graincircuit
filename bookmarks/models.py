@@ -130,15 +130,13 @@ class Bookmark(models.Model):
                     return
 
             # Fallback to Google Favicon for subdomain
-            subdomain_favicon = f'https://www.google.com/s2/favicons?sz=128&domain={
-                domain_name}'
+            subdomain_favicon = f'https://www.google.com/s2/favicons?sz=128&domain={domain_name}'
             if not Bookmark.is_image_pixelated(subdomain_favicon):
                 self.image_url = subdomain_favicon
                 return
 
             # Fallback to Google Favicon for base domain
-            base_domain_favicon = f'https://www.google.com/s2/favicons?sz=128&domain={
-                base_domain}'
+            base_domain_favicon = f'https://www.google.com/s2/favicons?sz=128&domain={base_domain}'
             if not Bookmark.is_image_pixelated(base_domain_favicon):
                 self.image_url = base_domain_favicon
                 return

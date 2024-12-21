@@ -117,9 +117,11 @@ def add_bookmark(request):
                 request, f"URL cannot be added due to an HTTP error: {e}")
             return redirect(request.GET.get("next", reverse("index")))
 
-        category = get_object_or_404(Category, id=category_id) if category_id else \
-            Category.objects.get_or_create(
-                user=request.user, category='Unsorted')[0]
+        category = (
+            get_object_or_404(Category, id=category_id)
+            if category_id
+            else Category.objects.filter(user=request.user, category='Unsorted').first()
+        )
 
         bookmark = Bookmark.objects.create(
             user=request.user, url=url, category=category)
@@ -136,7 +138,6 @@ def add_bookmark(request):
         return redirect(request.GET.get("next", reverse("index")))
 
     return redirect(request.GET.get("next", reverse("index")))
-
 
 
 @login_required(login_url='/login/')
@@ -171,7 +172,6 @@ def move_to_trash(request, bookmark_id):
     messages.success(request, "Bookmark moved to trash successfully.")
     next_url = request.GET.get('next', reverse('index'))
     return redirect(next_url)
-
 
 
 @login_required(login_url='/login/')
@@ -263,8 +263,7 @@ def add_category(request):
 
         if category_name:
             if Category.objects.filter(user=request.user, category__iexact=category_name).exists():
-                error_message = f'The category "{
-                    category_name}" already exists. Try with a different name.'
+                error_message = f'The category "{category_name}" already exists. Try with a different name.'
                 return render(request, 'bookmarks/categories.html', {
                     'error_message': error_message,
                     'selected_color': category_color,
@@ -298,8 +297,7 @@ def rename_category(request, category_id):
 
         if new_name:
             if Category.objects.filter(user=request.user, category__iexact=new_name).exists():
-                error_message = f'The category "{
-                    new_name}" already exists. Please choose another name.'
+                error_message = f'The category "{new_name}" already exists. Please choose another name.'
                 return render(request, 'bookmarks/categories.html', {
                     'error_message': error_message,
                     'selected_color': category.color,
@@ -399,7 +397,6 @@ def edit_bookmark(request, bookmark_id):
         return redirect(request.GET.get("next", reverse("index")))
 
     return redirect(request.GET.get("next", reverse("index")))
-
 
 
 @login_required(login_url='/login/')
@@ -566,7 +563,6 @@ def delete_all_bookmarks(request):
     return HttpResponseRedirect(reverse("trash"))
 
 
-
 @login_required(login_url='/login/')
 def profile(request):
     return render(request, "bookmarks/profile.html")
@@ -598,5 +594,3 @@ def update_bookmark_order(request):
         return JsonResponse({'error': str(e)}, status=400)
     except Exception as e:
         return JsonResponse({'error': 'An unexpected error occurred'}, status=500)
-    
-    
