@@ -5,10 +5,10 @@ set -o nounset
 
 # Wait for PostgreSQL to be ready
 if [ "$DATABASE" = "postgres" ]; then
-    echo "Waiting for PostgreSQL at $DB_HOST:$DB_PORT..."
+    echo "Waiting for PostgreSQL at $POSTGRES_HOST:$POSTGRES_PORT..."
 
     timeout=30
-    while ! nc -z $DB_HOST $DB_PORT; do
+    while ! nc -z $POSTGRES_HOST $POSTGRES_PORT; do
         sleep 0.1
         timeout=$((timeout - 1))
         if [ $timeout -le 0 ]; then
@@ -17,7 +17,7 @@ if [ "$DATABASE" = "postgres" ]; then
         fi
     done
 
-    echo "PostgreSQL is available at $DB_HOST:$DB_PORT"
+    echo "PostgreSQL is available at $POSTGRES_HOST:$POSTGRES_PORT"
 fi
 
 # Run the command passed to the container

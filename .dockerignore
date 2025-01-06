@@ -36,7 +36,6 @@ Dockerfile
 Dockerfile.prod
 docker-compose.yml
 docker-compose.prod.yml
-entrypoint.sh
 
 # Editor and IDE-related files
 .vscode/
