@@ -33,6 +33,7 @@ urllib3 = "==2.2.2"
 whitenoise = "*"
 psycopg2-binary = "*"
 gunicorn = "*"
+django-storages = {extras = ["azure"], version = "*"}
 
 [dev-packages]
 

@@ -25,8 +25,6 @@ RUN pipenv install --deploy --system
 # Copy the application files
 COPY . /app/
 
-# Collect static files
-RUN python manage.py collectstatic --noinput
 
 #########
 # FINAL #
@@ -55,5 +53,4 @@ USER appuser
 # Expose the port Gunicorn will listen on
 EXPOSE 8000
 
-# Run Gunicorn as the default command with increased timeout and more workers
 CMD ["gunicorn", "--bind", "0.0.0.0:8000", "graincircuit.wsgi:application"]
