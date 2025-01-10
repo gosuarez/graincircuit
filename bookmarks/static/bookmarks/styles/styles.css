@@ -36,8 +36,8 @@ body {
 
 .safe-area-wrapper {
   height: 100vh;
-  padding-top: env(safe-area-inset-top);    /* Account for the notch on iPhones */
-  padding-bottom: env(safe-area-inset-bottom); /* Account for the bottom bar on mobile devices */
+  padding-top: env(safe-area-inset-top);    
+  padding-bottom: env(safe-area-inset-bottom); 
   padding-left: env(safe-area-inset-left);
   padding-right: env(safe-area-inset-right);
   display: flex;
@@ -45,6 +45,23 @@ body {
 }
 
 /* Login Styles */
+.login {
+    background: url("/static/bookmarks/images/login-background.jpg") no-repeat center center fixed;
+    background-size: cover;
+    width: 100vw;
+    height: 100vh; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+}
+
+.login .card {
+    background: rgba(255, 255, 255, 0.9); 
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
 .login i, .register i {
     font-size: 3.5rem; 
     color: var(--blue);
