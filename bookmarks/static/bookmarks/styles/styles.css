@@ -46,14 +46,16 @@ body {
 
 /* Login Styles */
 .login {
-    background: url("/static/bookmarks/images/login-background.jpg") no-repeat center center fixed;
-    background-size: cover;
-    width: 100vw;
+    background-position: center center; 
+    background-repeat: no-repeat; 
+    background-attachment: fixed; 
+    background-size: cover; 
+    width: 100vw; 
     height: 100vh; 
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 0;
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    margin: 0; 
 }
 
 .login .card {

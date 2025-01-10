@@ -47,7 +47,7 @@ COPY --from=builder /app /app
 RUN rm -rf /var/cache/apk/* /root/.cache/pip/* /usr/local/share/.cache
 
 # Add a non-root user for security
-RUN adduser -D appuser && chown -R appuser:appuser /app
+RUN adduser -D appuser
 USER appuser
 
 # Expose the port Gunicorn will listen on
