@@ -1,38 +1,40 @@
 {% extends "bookmarks/layout.html" %}
+{% load static %}
 
 {% block body %}
-<div class="container d-flex justify-content-center align-items-center register">
-    <div class="card p-4 shadow" style="width: 23rem;">
-        <div class="card-body text-center">
-            <div class="d-flex flex-column justify-content-center align-items-center mb-3">
-                <i class="bi bi-boxes"></i> 
-                <h2 class="mb-3">GrainCircuit</h2> 
-            </div>
+<div class="login-register" style="background-image: url('{% static "bookmarks/images/login-background.jpg" %}');">
+    <div class="container d-flex justify-content-center align-items-center register">
+        <div class="card p-4 shadow" style="width: 23rem;">
+            <div class="card-body text-center">
+                <div class="d-flex flex-column justify-content-center align-items-center mb-3">
+                    <i class="bi bi-boxes" style="color: #212529"></i> 
+                    <h2 class="mb-3">GrainCircuit</h2> 
+                </div>
 
-            <!-- Flash messages -->
-            {% include "bookmarks/flash_messages.html" %}
+                <!-- Flash messages -->
+                {% include "bookmarks/flash_messages.html" %}
 
-            <form action="{% url 'register' %}" method="post">
-                {% csrf_token %}
-                <div class="mb-3">
-                    <input type="text" class="form-control" autofocus name="username" placeholder="Username" autocomplete="off" required>
+                <form action="{% url 'register' %}" method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <input type="text" class="form-control" autofocus name="username" placeholder="Username" autocomplete="off" required>
+                    </div>
+                    <div class="mb-3">
+                        <input type="email" class="form-control" name="email" placeholder="Email Address" autocomplete="new-password" required>
+                    </div>
+                    <div class="mb-3">
+                        <input type="password" class="form-control" name="password1" placeholder="Password" required>
+                    </div>
+                    <div class="mb-3">
+                        <input type="password" class="form-control" name="password2" placeholder="Confirm Password" required>
+                    </div>
+                    <div class="mb-3 text-center">
+                        <input type="submit" class="btn btn-dark w-100" value="Register">
+                    </div>
+                </form>
+                <div>
+                    Already have an account?<br> <a href="{% url 'login' %}">Log In here.</a>
                 </div>
-                <div class="mb-3">
-                    <input type="email" class="form-control" name="email" placeholder="Email Address" autocomplete="new-password" required>
-                </div>
-                <div class="mb-3">
-                    <input type="password" class="form-control" name="password1" placeholder="Password" required>
-                </div>
-                <div class="mb-3">
-                    <input type="password" class="form-control" name="password2" placeholder="Confirm Password" required>
-                </div>
-                <div class="mb-3 text-center">
-                    <input type="submit" class="btn btn-primary w-100" value="Register">
-                </div>
-            </form>
-
-            <div>
-                Already have an account?<br> <a href="{% url 'login' %}">Log In here.</a>
             </div>
         </div>
     </div>

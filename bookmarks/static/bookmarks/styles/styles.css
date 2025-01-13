@@ -19,7 +19,7 @@
   --grey: #495057;
   --grey-dark: #343a40;
   --grey-darker: #101010;
-  --grey-hover: #c4c4c4;
+  --grey-hover: #ededed;
   --white: #fff;
 
   /* Card Styles */
@@ -44,8 +44,8 @@ body {
   flex-direction: row;
 }
 
-/* Login Styles */
-.login {
+/* Login & Register Styles */
+.login-register {
     background-position: center center; 
     background-repeat: no-repeat; 
     background-attachment: fixed; 
@@ -58,18 +58,18 @@ body {
     margin: 0; 
 }
 
-.login .card {
+.login-register .card {
     background: rgba(255, 255, 255, 0.9); 
     border-radius: 10px;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
 }
 
-.login i, .register i {
+.login-register i, .register i {
     font-size: 3.5rem; 
     color: var(--blue);
 }
 
-.login .form-control {
+.login-register .form-control {
   border-color: var(--grey);
 }
 

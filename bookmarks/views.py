@@ -17,7 +17,7 @@ from django.contrib import messages
 from django.db import transaction
 from .models import Bookmark, Category, Tag
 from .utils import get_color_options, get_default_context, DEFAULT_COLOR
-from .forms import ProfileImageForm, EmailChangeForm, UsernameChangeForm
+from .forms import CustomUserCreationForm, ProfileImageForm, EmailChangeForm, UsernameChangeForm
 
 
 def index(request):

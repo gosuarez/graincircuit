@@ -39,4 +39,4 @@ jobs:
             -e AZURE_STATIC_CONTAINER="${{ secrets.AZURE_STATIC_CONTAINER }}" \
             -e USE_AZURE_STORAGE="${{ secrets.USE_AZURE_STORAGE }}" \
             ${{ secrets.DOCKER_USERNAME }}/graincircuit-web:latest \
-            python manage.py collectstatic --noinput --verbosity 3
+            python manage.py collectstatic --noinput --ignore-existing --verbosity 3
