@@ -17,6 +17,7 @@ GrainCircuit is a full-fledged, user-friendly web application for managing bookm
 ## Project Overview
 
 GrainCircuit is more than just a bookmark manager. It is a platform that transforms how users interact with their saved URLs:
+
 - **Visual Organisation**: Bookmarks are displayed as interactive, visually rich cards featuring metadata such as images, titles, categories, and dates.
 - **Customisation**: Users can personalise their experience by creating custom categories, assigning colours, and adding tags.
 - **Efficient Workflow**: Default categories like "Unsorted" and "Trash" help keep bookmarks organised automatically, with powerful search and sorting features to streamline navigation.
@@ -35,10 +36,10 @@ The application is built with Django on the backend, complemented by JavaScript 
 - **Testing**: Python `unittest`
 - **CI/CD**: GitHub Actions for automated build and deployment workflows
 
-
 ## Deployment Details
 
 GrainCircuit is hosted on Microsoft Azure using a fully containerised environment:
+
 - **Docker**: The app is dockerised to ensure consistent builds and deployments.
 - **Azure Blob Storage**: Static and media files are served securely via Azure Blob Storage.
 - **PostgreSQL**: Azure Database for PostgreSQL handles reliable, scalable data storage.
@@ -47,6 +48,7 @@ GrainCircuit is hosted on Microsoft Azure using a fully containerised environmen
 ## Getting Started
 
 ### Prerequisites
+
 - Python 3.12+
 - Docker
 - PostgreSQL
@@ -61,11 +63,13 @@ GrainCircuit is hosted on Microsoft Azure using a fully containerised environmen
    git clone https://github.com/gosuarez/graincircuit.git
    cd graincircuit
    ```
+
 2. Install dependencies:
 
-    ```bash 
+    ```bash
     pipenv install --dev
     ```
+
 3. Set up environment variables: Create `.env.dev` or `.env.prod` files based on the provided `.env.example.` Configure Azure, PostgreSQL, and other settings based on your environment.
 
 4. Run migrations:
@@ -75,6 +79,7 @@ GrainCircuit is hosted on Microsoft Azure using a fully containerised environmen
     ```
 
 5. Start the development server:
+
     ```bash
     python manage.py runserver
     ```
@@ -114,11 +119,12 @@ Run the test suite using:
 ```bash
 python manage.py test
 ```
+
 The suite includes unit tests for forms, models, and views to ensure the app functions as expected.
 
 ## Feedback
 
-If you have any questions or feedback, feel free to reach out to me at contact@gosuarez.com.
+If you have any questions or feedback, feel free to reach out to me at <contact@gosuarez.com>.
 
 ## License
 
