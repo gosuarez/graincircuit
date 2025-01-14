@@ -8,7 +8,7 @@ on:
 jobs:
   build-and-push:
     name: Build and Push Docker Image
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04  
 
     steps:
       - name: Check out code
@@ -27,7 +27,7 @@ jobs:
 
   collectstatic:
     name: Collect Static Files
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04  
     needs: build-and-push
 
     steps:
@@ -43,7 +43,7 @@ jobs:
 
   restart-app:
     name: Restart Azure Web App
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04  
     needs: collectstatic
 
     steps:
